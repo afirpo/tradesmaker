@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Please note that:
+ - 'defaultCooldownPerStep' is expressed in TICKS, not in SECONDS (I assume that ~1000 ticks = 1 second);
+ - 'costMultiplierPerStep' and 'unityMultiplierPerStep' are doubles - you have to use the dot as decimal separator, as per Invariant Culture formatting;
+ - 'cooldownPerStep', 'maxSteps', 'minReputationRequired', 'tradesPerStep' are all integers (no decimals!);
+ - 'ignoreTradeMultipliers' is a boolean, but you have to use 1 for TRUE and whatever other value you want for FALSE;
+ - all of those attributes of the root node are MANDATORY, because they are considered as defaults.
+ 
+I don't really know what these values means, but I would like to give you the most degree of freedom as possible
+just like if you're coding trades directly in C# - in fact, those are all [literally!] parameters
+of 'QuickTradePairProto' class' constructor, no joke.
+
+The numbers are directly taken from the quick trades, already in game, of the first Village (they are all the same for any trade).
+-->
+<tradesconfig defaultMaxSteps="16" defaultMinReputationRequired="1" defaultTradesPerStep="2" defaultCooldownPerStep="3000" defaultCostMultiplierPerStep="125" defaultUnityMultiplierPerStep="100" defaultIgnoreTradeMultipliers="0">
+	<!--
+	The attribute 'village' is an integer representing which Village on the World Map would do the trade. 
+	Of course, the Village number 1 is the settlement that is always visible since the game starts.
+	This attribute is MANDATORY.
+	You can add other 'trade' nodes, or use only some of them, from 1 to 5.
+	-->
+	<trade village="1">
+		<!-- 
+		Note that:
+		 - 'upointsPerTrade' is a double, and you'll have to use the '.' for separate decimals;
+		 - 'buyQty', 'payQty' are integers (only X units of goods at time);
+		 - 'cooldownPerStep', 'maxSteps', 'minReputationRequired', 'tradesPerStep' are also integers;
+		 - 'costMultiplierPerStep', 'unityMultiplierPerStep' are doubles just like the Unity cost;
+		 - 'ignoreTradeMultipliers' is 1 for TRUE and any other value for FALSE.
+		 
+		The full XML line to configure everything is as follows:
+		
+		 <quick productToBuy="" buyQty="" productToPayWith="" payQty="" upointsPerTrade="" maxSteps="" minReputationRequired="" tradesPerStep="" cooldownPerStep="" costMultiplierPerStep="" unityMultiplierPerStep="" ignoreTradeMultipliers="" />
+		 
+		Of course you can omit every attribute where you will want to use the default (=root node attributes) values EXCEPT for those MANDATORY attribs:
+		 - 'productToBuy' (see the 'ProductIds.txt' file inside the mod folder for some ideas);
+		 - 'productToPayWith' (as above, see that text file for reference);
+		 - 'buyQty' from 0 to integer's max value, I suppose;
+		 - 'payQty' just like the above attribute;
+		 - 'upointsPerTrade' should range from 0 to double's max value, I guess.
+		-->
+		<!-- Example cheaty quick trade config that will barter 1 Plutonium with 100 nuclear Spent Fuel at 0.1 Unity Points at the first Village: -->
+		<quick productToBuy="SpentFuel" buyQty="100" productToPayWith="Plutonium" payQty="1" upointsPerTrade="0.1" />
+	</trade>
+</tradesconfig>
