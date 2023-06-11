@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Mafi.Core.Products;
+using Mafi;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -43,4 +45,23 @@ namespace TradesMaker
     }
   }
 
+  internal static class UtilityExtensions
+  {
+    public static ProductProto.ID getProductOrThrow(this IDictionary<string, ProductProto.ID> productsDictionary, string productName)
+    {
+      KeyValuePair<string, ProductProto.ID> entry = productsDictionary
+        .SingleOrDefault(x => x.Key.Equals(productName, StringComparison.InvariantCultureIgnoreCase));
+
+      if (entry.Key == null)
+      {
+        string message = $"TradesMaker: the product {productName} seems NOT to be a tradeable product.";
+
+        Log.Warning(message);
+
+        throw new ApplicationException(message);
+      }
+
+      return entry.Value;
+    }
+  }
 }

@@ -6,14 +6,14 @@ using Mafi.Core;
 using Mafi.Core.Entities;
 using Mafi.Core.Mods;
 using Mafi.Core.Products;
-using Mafi.Core.Prototypes;
 using Mafi.Core.World.Entities;
 using Mafi.Core.World.QuickTrade;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Xml;
 
 namespace TradesMaker
@@ -53,9 +53,9 @@ namespace TradesMaker
       XmlDocument xDoc = new XmlDocument();
       xDoc.Load(filepathname);
 
-      foreach (XmlNode trade in xDoc.Descendants("tradesconfig").Single().Descendants("trade").AsParallel())
+      foreach (XmlNode trade in xDoc.Descendants("tradesconfig").Single().Descendants("trade"))
       {
-        foreach (XmlNode quick in trade.Descendants("quick").AsParallel())
+        foreach (XmlNode quick in trade.Descendants("quick"))
         {
           XmlQuickTradeElement element = new XmlQuickTradeElement();
 
@@ -84,23 +84,6 @@ namespace TradesMaker
       }
 
       return quickTrades;
-    }
-
-    private static ProductProto.ID getProductOrThrow(IDictionary<string, ProductProto.ID> productsDictionary, string productName)
-    {
-      KeyValuePair<string, ProductProto.ID> entry = productsDictionary
-        .SingleOrDefault(x => x.Key.Equals(productName, StringComparison.InvariantCultureIgnoreCase));
-
-      if (entry.Key == null)
-      {
-        string message = $"TradesMaker: the product {productName} seems NOT to be a tradeable product.";
-
-        Log.Warning(message);
-
-        throw new ApplicationException(message);
-      }
-
-      return entry.Value;
     }
 
     static TradesMaker()
@@ -134,46 +117,73 @@ namespace TradesMaker
 
       IEnumerable<XmlQuickTradeElement> quickTrades = loadXml(xmlConfigFile, tradeDefaults);
 
-      foreach (var trade in quickTrades)
+      Dictionary<int, Lyst<QuickTradePairProto>> tradesByVillages = new Dictionary<int, Lyst<QuickTradePairProto>>();
+
+      try
       {
-        try
+        foreach (IGrouping<int, XmlQuickTradeElement> groupedTrades in quickTrades.GroupBy(x => x.village))
         {
-          ProductProto.ID productInDict = getProductOrThrow(allProducts, trade.productToBuy);
+          WorldMapVillageProto tradeVillage = villages[groupedTrades.Key];
 
-          ProductProto productToBuy = registrator.PrototypesDb.GetOrThrow<ProductProto>(productInDict);
+          IEnumerable<QuickTradePairProto> existingTrades = tradeVillage.QuickTrades.AsEnumerable();
 
-          productInDict = getProductOrThrow(allProducts, trade.productToPayWith);
+          tradesByVillages.Add(groupedTrades.Key, new Lyst<QuickTradePairProto>(existingTrades));
 
-          ProductProto productToPayWith = registrator.PrototypesDb.GetOrThrow<ProductProto>(productInDict);
+          Lyst<QuickTradePairProto> trades = tradesByVillages[groupedTrades.Key];
 
-          WorldMapVillageProto tradeVillage = villages[trade.village];
-
-          Lyst<QuickTradePairProto> trades = new Lyst<QuickTradePairProto>(tradeVillage.QuickTrades.AsEnumerable())
+          foreach (XmlQuickTradeElement trade in groupedTrades)
           {
-            new QuickTradePairProto(new EntityProto.ID("TradesMaker_" + DateTime.Now.Ticks)
-                  , new ProductQuantity(productToBuy, trade.buyQty.Quantity())
-                  , new ProductQuantity(productToPayWith, trade.payQty.Quantity())
-                  , trade.upointsPerTrade.Upoints()
-                  , trade.maxSteps.Value
-                  , trade.minReputationRequired.Value
-                  , trade.tradesPerStep.Value
-                  , trade.cooldownPerStep.Value.Ticks()
-                  , trade.costMultiplierPerStep.Value.Percent()
-                  , trade.unityMultiplierPerStep.Value.Percent()
-                  , trade.ignoreTradeMultipliers.Value
-            )
-          };
+            ProductProto.ID productInDict = allProducts.getProductOrThrow(trade.productToBuy);
 
-          tradeVillage.QuickTrades = ImmutableArray.CreateRange(trades);
+            ProductProto productToBuy = registrator.PrototypesDb.GetOrThrow<ProductProto>(productInDict);
+
+            productInDict = allProducts.getProductOrThrow(trade.productToPayWith);
+
+            ProductProto productToPayWith = registrator.PrototypesDb.GetOrThrow<ProductProto>(productInDict);
+
+            // I prefer to use 'StringBuilder' even for this simple task
+            // instead of allocate and concatenate new strings one at a time.
+            // See more at:
+            // https://learn.microsoft.com/en-us/dotnet/standard/base-types/stringbuilder
+            StringBuilder quickTradeId = new StringBuilder("TradesMaker");
+
+            quickTradeId
+              .Append(trade.village)
+              .Append(productToBuy.Id.Value)
+              .Append(productToPayWith.Id.Value);
+
+            QuickTradePairProto quickTradePair = new QuickTradePairProto(new EntityProto.ID(quickTradeId.ToString())
+              , new ProductQuantity(productToBuy, trade.buyQty.Quantity())
+              , new ProductQuantity(productToPayWith, trade.payQty.Quantity())
+              , trade.upointsPerTrade.Upoints()
+              , trade.maxSteps.Value
+              , trade.minReputationRequired.Value
+              , trade.tradesPerStep.Value
+              , trade.cooldownPerStep.Value.Ticks()
+              , trade.costMultiplierPerStep.Value.Percent()
+              , trade.unityMultiplierPerStep.Value.Percent()
+              , trade.ignoreTradeMultipliers.Value);
+
+            trades.Add(quickTradePair);
+
+            registrator.PrototypesDb.Add(quickTradePair);
+          }
         }
-        catch (ApplicationException ex)
+
+        foreach (KeyValuePair<int, Lyst<QuickTradePairProto>> trade in tradesByVillages)
         {
-          Log.Error(ex.Message);
+          WorldMapVillageProto tradeVillage = villages[trade.Key];
+
+          tradeVillage.QuickTrades = ImmutableArray.CreateRange(trade.Value);
         }
-        catch (Exception ex)
-        {
-          Log.Error($"TradesMaker: unexpected error!" + Environment.NewLine + ex.ToString());
-        }
+      }
+      catch (ApplicationException ex)
+      {
+        Log.Error(ex.Message);
+      }
+      catch (Exception ex)
+      {
+        Log.Error($"TradesMaker: unexpected error!" + Environment.NewLine + ex.ToString());
       }
     }
 
@@ -185,7 +195,7 @@ namespace TradesMaker
 
         Type products = typeof(Ids.Products);
 
-        foreach (var field in products.GetFields().OrderBy(x => x.Name).AsParallel())
+        foreach (FieldInfo field in products.GetFields().OrderBy(x => x.Name))
         {
           object productId = field.GetValue(null);
 
