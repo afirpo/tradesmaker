@@ -39,8 +39,16 @@ The numbers are directly taken from the quick trades, already in game, of the fi
 		 - 'buyQty' from 0 to integer's max value, I suppose;
 		 - 'payQty' just like the above attribute;
 		 - 'upointsPerTrade' should range from 0 to double's max value, I guess.
+		
+		!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		!!! WARNING, PLEASE READ !!!
+		!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		
+		DO NOT remove Quick Trades that you had already used in any savegame.
+		I mean that if you save a game where you trade, for instance, 1 Wood for 1 Coal, and then you delete this XML line, the game won't load!
+		I'm tinkering out a solution (adding a logical flag "enabled/not enabled" won't works) but I cannot offer any warranty, sadly.
 		-->
-		<!-- Example cheaty quick trade config that will barter 1 Plutonium with 100 nuclear Spent Fuel at 0.1 Unity Points at the first Village: -->
+		<!-- Example of a cheaty quick trade config that will barter 1 Plutonium with 100 nuclear Spent Fuel at 0.1 Unity Points at the first Village: -->
 		<quick productToBuy="SpentFuel" buyQty="100" productToPayWith="Plutonium" payQty="1" upointsPerTrade="0.1" />
 	</trade>
 </tradesconfig>
