@@ -22,7 +22,7 @@ namespace TradesMaker
   {
     public override string Name => "Trades Maker";
 
-    public override int Version => 1;
+    public override int Version => 2;
 
     private static readonly string ModDirectory;
 
