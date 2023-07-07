@@ -33,17 +33,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mafi">
-      <HintPath>D:\Steam\steamapps\common\Captain of Industry\Captain of Industry_Data\Managed\Mafi.dll</HintPath>
+      <HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Mafi.dll</HintPath>
     </Reference>
     <Reference Include="Mafi.Base">
-      <HintPath>D:\Steam\steamapps\common\Captain of Industry\Captain of Industry_Data\Managed\Mafi.Base.dll</HintPath>
+      <HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Mafi.Base.dll</HintPath>
     </Reference>
     <Reference Include="Mafi.Core">
-      <HintPath>D:\Steam\steamapps\common\Captain of Industry\Captain of Industry_Data\Managed\System.Xml.dll</HintPath>
-    </Reference>
-    <Reference Include="Mafi.Core, Version=0.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Steam\steamapps\common\Captain of Industry\Captain of Industry_Data\Managed\Mafi.Core.dll</HintPath>
+      <HintPath>$(COI_ROOT)\Captain of Industry_Data\Managed\Mafi.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
