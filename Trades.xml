@@ -48,7 +48,11 @@ The numbers are directly taken from the quick trades, already in game, of the fi
 		I mean that if you save a game where you trade, for instance, 1 Wood for 1 Coal, and then you delete this XML line, the game won't load!
 		I'm tinkering out a solution (adding a logical flag "enabled/not enabled" won't works) but I cannot offer any warranty, sadly.
 		-->
-		<!-- Example of a cheaty quick trade config that will barter 1 Plutonium with 100 nuclear Spent Fuel at 0.1 Unity Points at the first Village: -->
-		<quick productToBuy="SpentFuel" buyQty="100" productToPayWith="Plutonium" payQty="1" upointsPerTrade="0.1" />
+		<!-- Example of a cheaty quick trade config that will barter 2 Plutonium with 18 nuclear Spent Fuel at 0.1 Unity Points at the first Village: -->
+		<quick productToBuy="SpentFuel" buyQty="18" productToPayWith="Plutonium" payQty="2" upointsPerTrade="0.1" />
+		<!-- Same as above, but with different products (2 Spent MOX fuel for 1 MOX fuel rod) at 1st village: -->
+		<quick productToBuy="MoxRod" buyQty="1" productToPayWith="SpentMox" payQty="2" upointsPerTrade="0.1" />
+		<!-- 1 MOX rod for 2 blanket fuel (not enriched), always at the first village, of course: -->
+		<quick productToBuy="MoxRod" buyQty="1" productToPayWith="BlanketFuel" payQty="2" upointsPerTrade="0.1" />
 	</trade>
 </tradesconfig>
