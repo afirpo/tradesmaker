@@ -22,7 +22,7 @@ namespace TradesMaker
   {
     public override string Name => "Trades Maker";
 
-    public override int Version => 2;
+    public override int Version => 3;
 
     private static readonly string ModDirectory;
 
@@ -98,6 +98,9 @@ namespace TradesMaker
 
     public override void RegisterPrototypes(ProtoRegistrator registrator)
     {
+      // As a little extra, make some un-storable Products... well, storable.
+      registrator.RegisterData<Extra.StoragePatch>();
+
       IDictionary<string, ProductProto.ID> allProducts;
 
       exportProductsIds(out allProducts);
