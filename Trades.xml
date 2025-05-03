@@ -13,7 +13,7 @@ of 'QuickTradePairProto' class' constructor, no joke.
 
 The numbers are directly taken from the quick trades, already in game, of the first Village (they are all the same for any trade).
 -->
-<tradesconfig defaultMaxSteps="16" defaultMinReputationRequired="1" defaultTradesPerStep="2" defaultCooldownPerStep="3000" defaultCostMultiplierPerStep="125" defaultUnityMultiplierPerStep="100" defaultIgnoreTradeMultipliers="0">
+<tradesconfig defaultMaxSteps="16" defaultMinReputationRequired="1" defaultTradesPerStep="2" defaultCooldownPerStep="3000" defaultCostMultiplierPerStep="125" defaultUnityMultiplierPerStep="100" defaultIgnoreTradeMultipliers="1">
 	<!--
 	The attribute 'village' is an integer representing which Village on the World Map would do the trade. 
 	Of course, the Village number 1 is the settlement that is always visible since the game starts.
@@ -38,7 +38,8 @@ The numbers are directly taken from the quick trades, already in game, of the fi
 		 - 'productToPayWith' (as above, see that text file for reference);
 		 - 'buyQty' from 0 to integer's max value, I suppose;
 		 - 'payQty' just like the above attribute;
-		 - 'upointsPerTrade' should range from 0 to double's max value, I guess.
+		 - 'upointsPerTrade' should range from 0 to double's max value, I guess;
+		 - 'ignoreTradeMultipliers' 1 for true/yes (you can omit this, defaults to 'defaultIgnoreTradeMultipliers' XML attribute above), controls if the Quantities are to be intended 'as is' or Reputation should influence how much you need to pay in order to buy something. For instance, if you want to pay 180 Sand for something, with multipliers you could have to pay 360 Sand instead. So I recommend to ignore those trade multipliers.
 		
 		!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		!!! WARNING, PLEASE READ !!!
@@ -49,10 +50,17 @@ The numbers are directly taken from the quick trades, already in game, of the fi
 		I'm tinkering out a solution (adding a logical flag "enabled/not enabled" won't works) but I cannot offer any warranty, sadly.
 		-->
 		<!-- Example of a cheaty quick trade config that will barter 2 Plutonium with 18 nuclear Spent Fuel at 0.1 Unity Points at the first Village: -->
-		<quick productToBuy="SpentFuel" buyQty="18" productToPayWith="Plutonium" payQty="2" upointsPerTrade="0.1" />
+		<quick productToBuy="SpentFuel" buyQty="18" productToPayWith="Plutonium" payQty="2" upointsPerTrade="0.1" ignoreTradeMultipliers="1" />
 		<!-- Same as above, but with different products (2 Spent MOX fuel for 1 MOX fuel rod) at 1st village: -->
-		<quick productToBuy="MoxRod" buyQty="1" productToPayWith="SpentMox" payQty="2" upointsPerTrade="0.1" />
+		<quick productToBuy="MoxRod" buyQty="1" productToPayWith="SpentMox" payQty="2" upointsPerTrade="0.1" ignoreTradeMultipliers="1" />
 		<!-- 1 MOX rod for 2 blanket fuel (not enriched), always at the first village, of course: -->
-		<quick productToBuy="MoxRod" buyQty="1" productToPayWith="BlanketFuel" payQty="2" upointsPerTrade="0.1" />
+		<quick productToBuy="MoxRod" buyQty="1" productToPayWith="BlanketFuel" payQty="2" upointsPerTrade="0.1" ignoreTradeMultipliers="1" />
+		<!-- 4 Spent MOX rod for 18 Spent Fuel: -->
+		<quick productToBuy="SpentFuel" buyQty="18" productToPayWith="SpentMox" payQty="4" upointsPerTrade="0.1" ignoreTradeMultipliers="1" />
+		<!-- 180 Depleted Uranium for 18 Spent Fuel: -->
+		<quick productToBuy="SpentFuel" buyQty="18" productToPayWith="UraniumDepleted" payQty="180" upointsPerTrade="0.1" ignoreTradeMultipliers="1" />
+		<!-- Throw that sluggish slag away! -->
+		<quick productToBuy="Rock" buyQty="10" productToPayWith="Slag" payQty="20" upointsPerTrade="0.1" ignoreTradeMultipliers="1" />
+		<quick productToBuy="Gravel" buyQty="20" productToPayWith="SlagCrushed" payQty="50" upointsPerTrade="0.1" ignoreTradeMultipliers="1" />
 	</trade>
 </tradesconfig>
