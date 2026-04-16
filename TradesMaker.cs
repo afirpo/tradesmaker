@@ -20,10 +20,6 @@ namespace TradesMaker
 {
   public sealed class TradesMaker : DataOnlyMod
   {
-    public override string Name => "Trades Maker";
-
-    public override int Version => 3;
-
     private static readonly string ModDirectory;
 
     private static QuickTradeDefaults loadDefaultsFromXml(string filepathname)
@@ -91,9 +87,9 @@ namespace TradesMaker
       ModDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Captain of Industry/Mods/TradesMaker");
     }
 
-    public TradesMaker(CoreMod coreMod, BaseMod baseMod)
+    public TradesMaker(ModManifest manifest) : base(manifest)
     {
-      // No dependencies, really.
+      // No dependencies.
     }
 
     public override void RegisterPrototypes(ProtoRegistrator registrator)
