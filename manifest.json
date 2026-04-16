@@ -1,6 +1,6 @@
 {
 	"id": "tradesmaker",
-	"version": "3.0.1",
+	"version": "3.1.0",
 	"description_short": "A plain and simple mod to let you configure new Quick Trades.",
 	"primary_dlls": [ "TradesMaker.dll" ],
 	"non_locking_dll_load": true
