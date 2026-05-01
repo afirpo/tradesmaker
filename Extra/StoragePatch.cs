@@ -12,12 +12,17 @@ namespace TradesMaker.Extra
 {
     internal class StoragePatch : IModData
     {
+        // TODO: this array definitely needs to be a configurable list!
         private static readonly ProductProto.ID[] storableProductsIds = {
             Ids.Products.Exhaust
             , Ids.Products.CoreFuel
             , Ids.Products.CoreFuelDirty
             , Ids.Products.BlanketFuel
             , Ids.Products.BlanketFuelEnriched
+            , Ids.Products.SteamSp
+            , Ids.Products.SteamHi
+            , Ids.Products.SteamLo
+            , Ids.Products.SteamDepleted
         };
 
         private static bool setStorable(ref ProtoRegistrator registrator, ref ProductProto.ID productId, bool storable = true)
